@@ -23,7 +23,7 @@ def get_location_coords(location):
 
 
 def get_weather_forecast(coords):
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={coords['latitude']}&longitude={coords['longitude']}&hourly=temperature_2m,precipitation_probability,precipitation&current_weather=true&timezone={coords['timezone']}"
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={coords['latitude']}&longitude={coords['longitude']}&hourly=temperature_2m,precipitation_probability,precipitation&current_weather=true&timezone={coords['timezone']}&temperature_unit=fahrenheit"
     response = requests.get(url).json()
     # print("get weather data", response)
     return response
@@ -32,14 +32,9 @@ def get_weather_forecast(coords):
 
 
 def print_weather_forecast(location, data):
-    # print(f"Weather forecast for {location, data}:")
-    for forecast in data["daily"]:
-        date = datetime.datetime.fromtimestamp(
-            forecast["timestamp"]).strftime("%A, %B %d")
-        temp = round(forecast["temperature_2m"]["max"], 1)
-        rain = round(forecast["precipitation"]["value"], 1)
-        weather = forecast["weathercode"]["value"]
-        print(f"{date}: {temp}°C, {rain} mm rain, {weather}")
+    weather = data['current_weather']
+    print(f"Weather forecast for {location, weather}:")
+    
 
 
 # Main program
@@ -48,6 +43,6 @@ coords = get_location_coords(location)
 if coords is None:
     print(f"{location} not found.")
 else:
-    print('coords', coords)
+    # print('coords', coords)
     data = get_weather_forecast(coords)
     print_weather_forecast(location, data)
